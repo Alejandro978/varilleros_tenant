@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "dgSpecHash": "q7GRYFbNBrY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\alejandro\\.nuget\\packages\\dapper\\2.1.33\\dapper.2.1.33.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\fluentvalidation\\11.10.0\\fluentvalidation.11.10.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.10.0\\fluentvalidation.dependencyinjectionextensions.11.10.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\microsoft.extensions.caching.memory\\10.0.0\\microsoft.extensions.caching.memory.10.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\microsoft.extensions.dependencymodel\\8.0.1\\microsoft.extensions.dependencymodel.8.0.1.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\mysqlconnector\\2.3.0\\mysqlconnector.2.3.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog\\3.1.1\\serilog.3.1.1.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.aspnetcore\\8.0.2\\serilog.aspnetcore.8.0.2.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.extensions.hosting\\8.0.0\\serilog.extensions.hosting.8.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.extensions.logging\\8.0.0\\serilog.extensions.logging.8.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.formatting.compact\\2.0.0\\serilog.formatting.compact.2.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.settings.configuration\\8.0.2\\serilog.settings.configuration.8.0.2.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.sinks.console\\5.0.0\\serilog.sinks.console.5.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.sinks.debug\\2.0.0\\serilog.sinks.debug.2.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\serilog.sinks.file\\5.0.0\\serilog.sinks.file.5.0.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\swashbuckle.aspnetcore\\6.7.0\\swashbuckle.aspnetcore.6.7.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.7.0\\swashbuckle.aspnetcore.swagger.6.7.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.7.0\\swashbuckle.aspnetcore.swaggergen.6.7.0.nupkg.sha512",
+    "C:\\Users\\alejandro\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.7.0\\swashbuckle.aspnetcore.swaggerui.6.7.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "message": "PackageReference Microsoft.Extensions.Caching.Memory no se eliminará. Considere la posibilidad de quitar este paquete de las dependencias, ya que es probable que no sea necesario.",
+      "projectPath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+      "libraryId": "Microsoft.Extensions.Caching.Memory",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "varilleros depende de Dapper (>= 2.1.29), pero no se encontró Dapper 2.1.29. Dapper 2.1.33 se resolvió en su lugar.",
+      "projectPath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+      "libraryId": "Dapper",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "varilleros depende de MySqlConnector (>= 2.2.11), pero no se encontró MySqlConnector 2.2.11. MySqlConnector 2.3.0 se resolvió en su lugar.",
+      "projectPath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\alejandro\\Desktop\\varilleros_tenant\\varilleros_api\\varilleros\\varilleros\\varilleros.csproj",
+      "libraryId": "MySqlConnector",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
+}
