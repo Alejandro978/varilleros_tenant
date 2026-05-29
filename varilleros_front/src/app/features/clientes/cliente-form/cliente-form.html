@@ -1,0 +1,33 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Nombre *</label>
+      <input pInputText formControlName="nombreCliente" placeholder="Nombre del cliente" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">NIF / CIF *</label>
+      <input pInputText formControlName="nifCif" placeholder="B12345678" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1 sm:col-span-2">
+      <label class="text-sm font-medium">Dirección *</label>
+      <input pInputText formControlName="direccion" placeholder="Calle, número..." class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Población *</label>
+      <input pInputText formControlName="poblacion" placeholder="Ciudad" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Email</label>
+      <input pInputText formControlName="email" type="email" placeholder="cliente@mail.com" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Teléfono</label>
+      <input pInputText formControlName="telefono" placeholder="600 000 000" class="w-full" />
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-2 pt-2">
+    <p-button label="Cancelar" severity="secondary" type="button" (click)="cancelled.emit()" />
+    <p-button label="Guardar" type="submit" [disabled]="form.invalid" />
+  </div>
+</form>

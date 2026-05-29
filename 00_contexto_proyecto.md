@@ -6,7 +6,7 @@
 
 ## 1. ¿Qué es este proyecto?
 
-SaaS multi-tenant para talleres de **reparación de abolladuras sin pintura (PDR / varilleros)**.  
+SaaS multi-tenant para talleres de **reparación de abolladuras (PDR / varilleros)**.  
 Cada empresa cliente (tenant) tiene su propia base de datos MySQL/MariaDB aislada.  
 La API detecta el tenant por la cabecera HTTP `X-Tenant-Id: {slug}` en cada request.
 

@@ -1,0 +1,62 @@
+<div class="flex items-center gap-2 mb-2">
+  <p-button icon="pi pi-arrow-left" severity="secondary" [text]="true" routerLink="/admin/tenants" />
+  <span class="text-surface-400 text-sm">Tenants</span>
+</div>
+
+<app-page-header title="Módulos del Tenant" />
+
+<!-- Asignar módulo -->
+<div class="flex items-end gap-3 mb-6 p-4 bg-surface-0 rounded-xl border border-surface-200">
+  <div class="flex flex-col gap-1 flex-1">
+    <label class="text-sm font-medium">Asignar módulo</label>
+    <p-select
+      [formControl]="$any(assignForm.get('moduleId'))"
+      [options]="availableModules"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Seleccionar módulo..."
+      styleClass="w-full"
+    />
+  </div>
+  <p-button label="Asignar" icon="pi pi-plus" (click)="assign()" [disabled]="!assignForm.value.moduleId" />
+</div>
+
+<!-- Lista de módulos asignados -->
+<p-table
+  [value]="assignedModules()"
+  [loading]="loading()"
+  stripedRows
+  styleClass="p-datatable-sm"
+>
+  <ng-template #header>
+    <tr>
+      <th>Código</th>
+      <th>Módulo</th>
+      <th class="text-center">Activo</th>
+      <th>Asignado el</th>
+      <th>Expira</th>
+      <th class="w-24">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="font-mono font-medium">{{ item.moduleCode }}</td>
+      <td>{{ item.moduleName }}</td>
+      <td class="text-center">
+        <p-tag [value]="item.isActive ? 'Activo' : 'Inactivo'" [severity]="item.isActive ? 'success' : 'secondary'" />
+      </td>
+      <td class="text-sm text-surface-500">{{ item.grantedAt ?? '—' }}</td>
+      <td class="text-sm text-surface-500">{{ item.expiresAt ?? 'Indefinido' }}</td>
+      <td>
+        <p-button icon="pi pi-times" severity="danger" size="small" [text]="true" (click)="revoke(item.moduleId)" />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="6">
+        <app-empty-state message="Este tenant no tiene módulos asignados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

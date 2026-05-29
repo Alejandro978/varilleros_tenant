@@ -1,0 +1,55 @@
+<app-page-header title="Catálogo de Módulos">
+  <p-button label="Nuevo Módulo" icon="pi pi-plus" (click)="openCreate()" />
+</app-page-header>
+
+<p-table
+  [value]="items()"
+  [loading]="loading()"
+  stripedRows
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+>
+  <ng-template #header>
+    <tr>
+      <th>Código</th>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th class="text-center">Activo</th>
+      <th class="w-24">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="font-mono font-medium">{{ item.code }}</td>
+      <td>{{ item.name }}</td>
+      <td class="text-surface-500 text-sm">{{ item.description }}</td>
+      <td class="text-center">
+        <p-tag
+          [value]="item.isActive ? 'Activo' : 'Inactivo'"
+          [severity]="item.isActive ? 'success' : 'secondary'"
+        />
+      </td>
+      <td>
+        <p-button icon="pi pi-pencil" severity="secondary" size="small" [text]="true" (click)="openEdit(item)" />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="5">
+        <app-empty-state message="No hay módulos registrados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editing() ? 'Editar Módulo' : 'Nuevo Módulo'"
+  [visible]="showForm()"
+  (visibleChange)="showForm.set($event)"
+  [modal]="true"
+  [style]="{ width: '460px' }"
+  [draggable]="false"
+>
+  <app-module-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+</p-dialog>

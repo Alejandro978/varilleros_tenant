@@ -1,0 +1,60 @@
+<app-page-header title="Tenants">
+  <p-button label="Nuevo Tenant" icon="pi pi-plus" (click)="openCreate()" />
+</app-page-header>
+
+<p-table
+  [value]="items()"
+  [loading]="loading()"
+  stripedRows
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+>
+  <ng-template #header>
+    <tr>
+      <th>Nombre</th>
+      <th>Slug</th>
+      <th class="text-center">Activo</th>
+      <th class="w-36">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="font-medium">{{ item.name }}</td>
+      <td class="font-mono text-sm text-surface-500">{{ item.slug }}</td>
+      <td class="text-center">
+        <p-tag
+          [value]="item.isActive ? 'Activo' : 'Inactivo'"
+          [severity]="item.isActive ? 'success' : 'secondary'"
+        />
+      </td>
+      <td>
+        <div class="flex gap-1">
+          <p-button icon="pi pi-pencil" severity="secondary" size="small" [text]="true" (click)="openEdit(item)" />
+          <p-button icon="pi pi-link" severity="info" size="small" [text]="true"
+            [routerLink]="['/admin/tenants', item.id, 'modules']"
+            pTooltip="Gestionar módulos"
+          />
+          <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true" (click)="confirmDelete(item.id)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="4">
+        <app-empty-state message="No hay tenants registrados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editing() ? 'Editar Tenant' : 'Nuevo Tenant'"
+  [visible]="showForm()"
+  (visibleChange)="showForm.set($event)"
+  [modal]="true"
+  [style]="{ width: '580px' }"
+  [draggable]="false"
+>
+  <app-tenant-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+</p-dialog>

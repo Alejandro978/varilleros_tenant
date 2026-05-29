@@ -1,0 +1,62 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Nombre *</label>
+      <input pInputText formControlName="name" placeholder="Mi Empresa S.L." class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Slug *</label>
+      <input pInputText formControlName="slug" placeholder="mi-empresa" class="w-full" />
+      @if (item()) {
+        <small class="text-surface-400">El slug no se puede cambiar una vez creado</small>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Host BD *</label>
+      <input pInputText formControlName="dbHost" placeholder="localhost" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Puerto BD *</label>
+      <p-inputnumber formControlName="dbPort" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Nombre BD *</label>
+      <input pInputText formControlName="dbName" placeholder="varilleros_miempresa" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Usuario BD *</label>
+      <input pInputText formControlName="dbUser" placeholder="root" class="w-full" />
+    </div>
+    <div class="flex flex-col gap-1 sm:col-span-2">
+      <label class="text-sm font-medium">Contraseña BD</label>
+      <p-password
+        formControlName="dbPassword"
+        [feedback]="false"
+        [toggleMask]="true"
+        styleClass="w-full"
+        inputStyleClass="w-full"
+      />
+    </div>
+    <div class="flex flex-col gap-1 sm:col-span-2">
+      <label class="text-sm font-medium">
+        Contraseña de acceso a la app {{ item() ? '' : '*' }}
+      </label>
+      <p-password
+        formControlName="appPassword"
+        [feedback]="false"
+        [toggleMask]="true"
+        styleClass="w-full"
+        inputStyleClass="w-full"
+        [placeholder]="item() ? 'Dejar vacío para no cambiar' : 'Contraseña de acceso'"
+      />
+      @if (item()) {
+        <small class="text-surface-400">Dejar vacío para mantener la contraseña actual</small>
+      }
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-2 pt-2">
+    <p-button label="Cancelar" severity="secondary" type="button" (click)="cancelled.emit()" />
+    <p-button label="Guardar" type="submit" [disabled]="form.invalid" />
+  </div>
+</form>

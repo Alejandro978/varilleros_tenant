@@ -1,0 +1,19 @@
+<h1 class="text-2xl font-bold text-surface-900 mb-6">Panel principal</h1>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  @for (card of cards; track card.route) {
+    <a [routerLink]="card.route" class="no-underline">
+      <p-card styleClass="hover:shadow-md transition-shadow cursor-pointer h-full">
+        <div class="flex items-start gap-4">
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-surface-100 flex-shrink-0">
+            <i [class]="card.icon + ' text-2xl ' + card.color"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-surface-900 mb-1">{{ card.title }}</h3>
+            <p class="text-sm text-surface-500">{{ card.description }}</p>
+          </div>
+        </div>
+      </p-card>
+    </a>
+  }
+</div>

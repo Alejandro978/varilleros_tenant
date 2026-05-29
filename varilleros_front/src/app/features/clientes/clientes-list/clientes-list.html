@@ -1,0 +1,55 @@
+<app-page-header title="Clientes">
+  <p-button label="Nuevo Cliente" icon="pi pi-plus" (click)="openCreate()" />
+</app-page-header>
+
+<p-table
+  [value]="items()"
+  [loading]="loading()"
+  stripedRows
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+>
+  <ng-template #header>
+    <tr>
+      <th>Nombre</th>
+      <th>NIF / CIF</th>
+      <th>Población</th>
+      <th>Email</th>
+      <th>Teléfono</th>
+      <th class="w-24">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="font-medium">{{ item.nombreCliente }}</td>
+      <td>{{ item.nifCif }}</td>
+      <td>{{ item.poblacion }}</td>
+      <td>{{ item.email }}</td>
+      <td>{{ item.telefono }}</td>
+      <td>
+        <div class="flex gap-1">
+          <p-button icon="pi pi-pencil" severity="secondary" size="small" [text]="true" (click)="openEdit(item)" />
+          <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true" (click)="confirmDelete(item.id)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="6">
+        <app-empty-state message="No hay clientes registrados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editing() ? 'Editar Cliente' : 'Nuevo Cliente'"
+  [visible]="showForm()"
+  (visibleChange)="showForm.set($event)"
+  [modal]="true"
+  [style]="{ width: '540px' }"
+  [draggable]="false"
+>
+  <app-cliente-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+</p-dialog>

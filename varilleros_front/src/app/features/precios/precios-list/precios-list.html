@@ -1,0 +1,60 @@
+<app-page-header title="Tabla de Precios" />
+
+<p-table
+  [value]="items()"
+  [loading]="loading()"
+  stripedRows
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+  [scrollable]="true"
+>
+  <ng-template #header>
+    <tr>
+      <th class="text-center" rowspan="2">Nº Abolladuras</th>
+      <th class="text-center" colspan="3">Aleta</th>
+      <th class="text-center" colspan="3">Puerta</th>
+      <th class="text-center" colspan="3">Techo</th>
+      <th class="text-center" colspan="3">Capó</th>
+      <th class="text-center" colspan="3">Portón</th>
+      <th class="text-center" colspan="3">Montante</th>
+    </tr>
+    <tr>
+      <th>Leve</th><th>Medio</th><th>Grave</th>
+      <th>Leve</th><th>Medio</th><th>Grave</th>
+      <th>Leve</th><th>Medio</th><th>Grave</th>
+      <th>Leve</th><th>Medio</th><th>Grave</th>
+      <th>Leve</th><th>Medio</th><th>Grave</th>
+      <th>Leve</th><th>Medio</th><th>Grave</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="text-center font-bold">{{ item.numeroabolladuras }}</td>
+      <td class="text-right">{{ item.aletaleve ?? '—' }}</td>
+      <td class="text-right">{{ item.aletamedio ?? '—' }}</td>
+      <td class="text-right">{{ item.aletagrave ?? '—' }}</td>
+      <td class="text-right">{{ item.puertaleve ?? '—' }}</td>
+      <td class="text-right">{{ item.puertamedio ?? '—' }}</td>
+      <td class="text-right">{{ item.puertagrave ?? '—' }}</td>
+      <td class="text-right">{{ item.techoleve ?? '—' }}</td>
+      <td class="text-right">{{ item.techomedio ?? '—' }}</td>
+      <td class="text-right">{{ item.techograve ?? '—' }}</td>
+      <td class="text-right">{{ item.capoleve ?? '—' }}</td>
+      <td class="text-right">{{ item.capomedio ?? '—' }}</td>
+      <td class="text-right">{{ item.capograve ?? '—' }}</td>
+      <td class="text-right">{{ item.portonleve ?? '—' }}</td>
+      <td class="text-right">{{ item.portonmedio ?? '—' }}</td>
+      <td class="text-right">{{ item.portongrave ?? '—' }}</td>
+      <td class="text-right">{{ item.montanteleve ?? '—' }}</td>
+      <td class="text-right">{{ item.montantemedio ?? '—' }}</td>
+      <td class="text-right">{{ item.montantegrave ?? '—' }}</td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="19">
+        <app-empty-state message="No hay precios configurados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

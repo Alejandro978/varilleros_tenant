@@ -1,0 +1,5 @@
+/* El import nativo de Tailwind v4 */
+@import 'tailwindcss';
+
+/* Iconos oficiales de PrimeNG (este sí se mantiene aquí) */
+@import "primeicons/primeicons.css";

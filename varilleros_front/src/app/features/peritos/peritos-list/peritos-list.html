@@ -1,0 +1,49 @@
+<app-page-header title="Peritos">
+  <p-button label="Nuevo Perito" icon="pi pi-plus" (click)="openCreate()" />
+</app-page-header>
+
+<p-table
+  [value]="items()"
+  [loading]="loading()"
+  stripedRows
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+>
+  <ng-template #header>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th class="w-24">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="font-medium">{{ item.nombre }}</td>
+      <td>{{ item.email }}</td>
+      <td>
+        <div class="flex gap-1">
+          <p-button icon="pi pi-pencil" severity="secondary" size="small" [text]="true" (click)="openEdit(item)" />
+          <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true" (click)="confirmDelete(item.id)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="3">
+        <app-empty-state message="No hay peritos registrados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editing() ? 'Editar Perito' : 'Nuevo Perito'"
+  [visible]="showForm()"
+  (visibleChange)="showForm.set($event)"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+  [draggable]="false"
+>
+  <app-perito-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+</p-dialog>

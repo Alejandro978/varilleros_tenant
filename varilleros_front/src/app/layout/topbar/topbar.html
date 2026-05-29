@@ -1,0 +1,35 @@
+<header class="flex items-center h-14 px-4 bg-surface-0 border-b border-surface-200 gap-3 flex-shrink-0">
+  <!-- Hamburger: solo en móvil/tablet -->
+  <p-button
+    class="lg:hidden"
+    icon="pi pi-bars"
+    severity="secondary"
+    [text]="true"
+    (click)="menuToggle.emit()"
+    ariaLabel="Menú"
+  />
+
+  <!-- Logo / Brand -->
+  <span class="font-bold text-primary text-lg hidden lg:block">Varilleros</span>
+
+  <!-- Spacer -->
+  <div class="flex-1"></div>
+
+  <!-- Tenant name -->
+  <span class="text-sm font-semibold text-surface-700 hidden sm:block">
+    {{ auth.getTenantName() | uppercase }}
+  </span>
+
+  <!-- Avatar + user -->
+  <div class="flex items-center gap-2">
+    <p-avatar icon="pi pi-user" shape="circle" size="normal" />
+    <span class="text-sm text-surface-600 hidden sm:block">{{ auth.getUserEmail() }}</span>
+    <p-button
+      icon="pi pi-sign-out"
+      severity="secondary"
+      [text]="true"
+      (click)="auth.logout()"
+      ariaLabel="Salir"
+    />
+  </div>
+</header>

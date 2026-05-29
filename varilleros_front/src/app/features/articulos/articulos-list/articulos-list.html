@@ -1,0 +1,51 @@
+<app-page-header title="Artículos">
+  <p-button label="Nuevo Artículo" icon="pi pi-plus" (click)="openCreate()" />
+</app-page-header>
+
+<p-table
+  [value]="items()"
+  [loading]="loading()"
+  stripedRows
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+>
+  <ng-template #header>
+    <tr>
+      <th>Código</th>
+      <th>Descripción</th>
+      <th>Cód. Precio</th>
+      <th class="w-24">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td class="font-mono font-medium">{{ item.codigo }}</td>
+      <td>{{ item.descripcion }}</td>
+      <td class="font-mono text-sm text-surface-500">{{ item.codigoPrecioPresupuesto }}</td>
+      <td>
+        <div class="flex gap-1">
+          <p-button icon="pi pi-pencil" severity="secondary" size="small" [text]="true" (click)="openEdit(item)" />
+          <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true" (click)="confirmDelete(item.id)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="4">
+        <app-empty-state message="No hay artículos registrados" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [header]="editing() ? 'Editar Artículo' : 'Nuevo Artículo'"
+  [visible]="showForm()"
+  (visibleChange)="showForm.set($event)"
+  [modal]="true"
+  [style]="{ width: '460px' }"
+  [draggable]="false"
+>
+  <app-articulo-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+</p-dialog>
