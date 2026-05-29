@@ -1,0 +1,72 @@
+# ============================================================
+# .NET / ASP.NET Core
+# ============================================================
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docobj
+*.userprefs
+.vs/
+*.vsidx
+*.mpack
+*.cache
+*.db
+*.suo
+logs/
+*.log
+
+# Publicaciones y artefactos
+publish/
+out/
+[Pp]ackages/
+*.nupkg
+*.snupkg
+
+# Secretos y configuración local
+appsettings.Local.json
+appsettings.*.Local.json
+**/secrets.json
+
+# Cobertura y tests
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Entity Framework migrations generadas localmente (opcional, quita si las versiones)
+# Migrations/
+
+# ============================================================
+# Angular / Node
+# ============================================================
+node_modules/
+dist/
+.angular/
+
+# Caché de compilación
+.cache/
+*.tsbuildinfo
+
+# Entornos con secretos
+src/environments/environment.local.ts
+
+# ============================================================
+# IDEs y editores
+# ============================================================
+.idea/
+*.iml
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# Sistema operativo
+# ============================================================
+desktop.ini
+$RECYCLE.BIN/
