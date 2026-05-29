@@ -1,7 +1,12 @@
+using System.Text;
+using Dapper;
 using FluentValidation;
 using Serilog;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Varilleros.src.Application.UseCases.Articulos;
+using Varilleros.src.Application.UseCases.Auth;
 using Varilleros.src.Application.UseCases.Clientes;
 using Varilleros.src.Application.UseCases.Modules;
 using Varilleros.src.Application.UseCases.Peritos;
@@ -18,6 +23,9 @@ using Varilleros.src.Infrastructure.Repositories;
 using Varilleros.src.Infrastructure.Repositories.Master;
 using Varilleros.src.Api.Middleware;
 using Varilleros.src.Api.Swagger;
+
+// Mapeo automático snake_case → PascalCase para Dapper
+DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,11 +50,8 @@ builder.Services.AddSwaggerGen(options =>
         Contact = new() { Name = "Varilleros Support" }
     });
 
-    // Añade el campo X-Tenant-Id en cada endpoint de tenant (no en admin)
     options.OperationFilter<TenantHeaderOperationFilter>();
 
-    // Botón "Authorize" en Swagger UI: introduce el slug del tenant una vez
-    // y se enviará automáticamente en todas las peticiones
     options.AddSecurityDefinition("TenantId", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.ApiKey,
@@ -55,23 +60,65 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Introduce el slug del tenant (ej: acme, varilleros-bcn)"
     });
 
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Token JWT obtenido en POST /api/auth/login"
+    });
+
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "TenantId"
-                }
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "TenantId" }
+            },
+            Array.Empty<string>()
+        },
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
             },
             Array.Empty<string>()
         }
     });
 });
 
-// --- Master DB factory (Singleton: conexión fija a master, no cambia por request) ---
+// --- CORS ---
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
+    {
+        var origins = (allowedOrigins is { Length: > 0 })
+            ? allowedOrigins
+            : new[] { "http://localhost:4200" };
+        policy.WithOrigins(origins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    }));
+
+// --- JWT Authentication ---
+var jwtSecret = builder.Configuration["Jwt:Secret"]
+    ?? throw new InvalidOperationException("Jwt:Secret no configurado");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            ValidateIssuer   = true,
+            ValidIssuer      = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience    = builder.Configuration["Jwt:Audience"],
+            ValidateLifetime = true,
+        };
+    });
+
+// --- Master DB factory ---
 var masterConnStr = builder.Configuration.GetConnectionString("MasterDb")
     ?? throw new InvalidOperationException("ConnectionString 'MasterDb' no encontrada.");
 builder.Services.AddSingleton<IMasterDbConnectionFactory>(new MySqlConnectionFactory(masterConnStr));
@@ -84,7 +131,7 @@ builder.Services.AddScoped<TenantContextHolder>();
 builder.Services.AddSingleton<ITenantResolver, TenantResolver>();
 builder.Services.Configure<TenantCacheOptions>(builder.Configuration.GetSection("TenantCache"));
 
-// --- Tenant DB factory (Scoped: se resuelve tras el TenantMiddleware con el slug del header) ---
+// --- Tenant DB factory ---
 builder.Services.AddScoped<ITenantDbConnectionFactory, TenantDbConnectionFactory>();
 
 // --- Repositorios Tenant ---
@@ -98,6 +145,9 @@ builder.Services.AddScoped<IPresupuestoRepository, PresupuestoRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IModuleCatalogRepository, ModuleCatalogRepository>();
 builder.Services.AddScoped<ITenantModuleRepository, TenantModuleRepository>();
+
+// --- Use Cases: Auth ---
+builder.Services.AddScoped<LoginUseCase>();
 
 // --- Use Cases: Clientes ---
 builder.Services.AddScoped<GetAllClientesUseCase>();
@@ -157,7 +207,9 @@ var app = builder.Build();
 
 // --- Pipeline ---
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<TenantMiddleware>();   // debe ir ANTES de los controllers
+app.UseCors();
+app.UseAuthentication();
+app.UseMiddleware<TenantMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -166,7 +218,9 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Varilleros API v1"));
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

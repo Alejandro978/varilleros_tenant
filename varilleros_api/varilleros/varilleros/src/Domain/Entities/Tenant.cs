@@ -13,6 +13,7 @@ public sealed class Tenant
     public string DbUser { get; private set; } = null!;
     public string DbPassword { get; private set; } = null!;
     public bool IsActive { get; private set; }
+    public string? PasswordHash { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -32,9 +33,6 @@ public sealed class Tenant
             throw new DomainException("DbName es obligatorio");
         if (string.IsNullOrWhiteSpace(dbUser))
             throw new DomainException("DbUser es obligatorio");
-        if (string.IsNullOrWhiteSpace(dbPassword))
-            throw new DomainException("DbPassword es obligatorio");
-
         return new Tenant
         {
             Name = name,
@@ -58,6 +56,12 @@ public sealed class Tenant
         DbName = dbName;
         DbUser = dbUser;
         DbPassword = dbPassword;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetPasswordHash(string hash)
+    {
+        PasswordHash = hash;
         UpdatedAt = DateTime.UtcNow;
     }
 

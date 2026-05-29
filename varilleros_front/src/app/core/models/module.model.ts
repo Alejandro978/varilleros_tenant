@@ -1,3 +1,8 @@
+export interface ActiveModuleDto {
+  code: string;
+  name: string;
+}
+
 export interface ModuleCatalogDto {
   id: number;
   code: string;

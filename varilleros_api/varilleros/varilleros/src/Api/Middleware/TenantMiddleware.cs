@@ -5,7 +5,7 @@ using Infrastructure.MultiTenancy;
 public sealed class TenantMiddleware(RequestDelegate next)
 {
     // Las rutas de administración trabajan con la master DB y no requieren cabecera de tenant
-    private static readonly string[] AdminPrefixes = ["/api/admin", "/swagger", "/health"];
+    private static readonly string[] AdminPrefixes = ["/api/admin", "/api/auth", "/swagger", "/health"];
 
     public async Task InvokeAsync(HttpContext ctx, ITenantResolver resolver, TenantContextHolder holder)
     {

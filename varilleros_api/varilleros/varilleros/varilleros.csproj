@@ -24,6 +24,10 @@
 
     <!-- Caching -->
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+
+    <!-- Auth -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
   </ItemGroup>
 
 </Project>

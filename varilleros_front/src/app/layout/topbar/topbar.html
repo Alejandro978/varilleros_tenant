@@ -23,7 +23,7 @@
   <!-- Avatar + user -->
   <div class="flex items-center gap-2">
     <p-avatar icon="pi pi-user" shape="circle" size="normal" />
-    <span class="text-sm text-surface-600 hidden sm:block">{{ auth.getUserEmail() }}</span>
+    <span class="text-sm text-surface-600 hidden sm:block">{{ auth.getTenantName() | uppercase }}</span>
     <p-button
       icon="pi pi-sign-out"
       severity="secondary"

@@ -31,9 +31,22 @@ public sealed class TenantRepository(IMasterDbConnectionFactory factory) : ITena
     {
         using var conn = factory.CreateConnection();
         await conn.ExecuteAsync("""
-            INSERT INTO tenants (name, slug, db_host, db_port, db_name, db_user, db_password, is_active, created_at, updated_at)
-            VALUES (@Name, @Slug, @DbHost, @DbPort, @DbName, @DbUser, @DbPassword, @IsActive, @CreatedAt, @UpdatedAt)
-            """, tenant);
+            INSERT INTO tenants (name, slug, db_host, db_port, db_name, db_user, db_password, password_hash, is_active, created_at, updated_at)
+            VALUES (@Name, @Slug, @DbHost, @DbPort, @DbName, @DbUser, @DbPassword, @PasswordHash, @IsActive, @CreatedAt, @UpdatedAt)
+            """, new
+        {
+            tenant.Name,
+            tenant.Slug,
+            tenant.DbHost,
+            tenant.DbPort,
+            tenant.DbName,
+            tenant.DbUser,
+            tenant.DbPassword,
+            tenant.PasswordHash,
+            tenant.IsActive,
+            tenant.CreatedAt,
+            tenant.UpdatedAt,
+        });
         return await conn.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID()");
     }
 
@@ -51,12 +64,31 @@ public sealed class TenantRepository(IMasterDbConnectionFactory factory) : ITena
                 is_active = @IsActive,
                 updated_at = @UpdatedAt
             WHERE id = @Id
-            """, tenant);
+            """, new
+        {
+            tenant.Id,
+            tenant.Name,
+            tenant.DbHost,
+            tenant.DbPort,
+            tenant.DbName,
+            tenant.DbUser,
+            tenant.DbPassword,
+            tenant.IsActive,
+            tenant.UpdatedAt,
+        });
     }
 
     public async Task DeleteAsync(int id, CancellationToken ct = default)
     {
         using var conn = factory.CreateConnection();
         await conn.ExecuteAsync("DELETE FROM tenants WHERE id = @id", new { id });
+    }
+
+    public async Task UpdatePasswordHashAsync(int id, string passwordHash, CancellationToken ct = default)
+    {
+        using var conn = factory.CreateConnection();
+        await conn.ExecuteAsync(
+            "UPDATE tenants SET password_hash = @passwordHash, updated_at = UTC_TIMESTAMP() WHERE id = @id",
+            new { id, passwordHash });
     }
 }

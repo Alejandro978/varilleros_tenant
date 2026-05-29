@@ -1,9 +1,11 @@
 namespace Varilleros.src.Api.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.DTOs;
 using Application.UseCases.Presupuestos;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public sealed class PresupuestosController(

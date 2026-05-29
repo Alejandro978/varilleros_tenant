@@ -10,4 +10,5 @@ public interface ITenantRepository
     Task<int> CreateAsync(Tenant tenant, CancellationToken ct = default);
     Task UpdateAsync(Tenant tenant, CancellationToken ct = default);
     Task DeleteAsync(int id, CancellationToken ct = default);
+    Task UpdatePasswordHashAsync(int id, string passwordHash, CancellationToken ct = default);
 }

@@ -14,6 +14,6 @@ public class CreateTenantDtoValidator : AbstractValidator<CreateTenantDto>
         RuleFor(x => x.DbPort).InclusiveBetween(1, 65535);
         RuleFor(x => x.DbName).NotEmpty();
         RuleFor(x => x.DbUser).NotEmpty();
-        RuleFor(x => x.DbPassword).NotEmpty();
+        RuleFor(x => x.AppPassword).NotEmpty().MinimumLength(6);
     }
 }

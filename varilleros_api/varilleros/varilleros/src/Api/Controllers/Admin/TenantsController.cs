@@ -1,8 +1,10 @@
 namespace Varilleros.src.Api.Controllers.Admin;
 
+using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Application.DTOs;
 using Application.UseCases.Tenants;
+using Domain.Repositories.Master;
 
 [ApiController]
 [Route("api/admin/tenants")]
@@ -11,7 +13,8 @@ public sealed class TenantsController(
     GetTenantByIdUseCase getById,
     CreateTenantUseCase create,
     UpdateTenantUseCase update,
-    DeleteTenantUseCase delete) : ControllerBase
+    DeleteTenantUseCase delete,
+    ITenantRepository repo) : ControllerBase
 {
     /// <summary>Listar todos los tenants</summary>
     [HttpGet]
@@ -23,7 +26,7 @@ public sealed class TenantsController(
     public async Task<IActionResult> GetById(int id, CancellationToken ct) =>
         Ok(await getById.ExecuteAsync(id, ct));
 
-    /// <summary>Crear nuevo tenant</summary>
+    /// <summary>Crear nuevo tenant con contraseña de acceso a la app</summary>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTenantDto dto, CancellationToken ct)
     {
@@ -31,11 +34,20 @@ public sealed class TenantsController(
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
-    /// <summary>Actualizar tenant</summary>
+    /// <summary>Actualizar datos del tenant</summary>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateTenantDto dto, CancellationToken ct)
     {
         await update.ExecuteAsync(id, dto with { Id = id }, ct);
+        return NoContent();
+    }
+
+    /// <summary>Cambiar la contraseña de acceso a la app del tenant</summary>
+    [HttpPut("{id:int}/password")]
+    public async Task<IActionResult> SetPassword(int id, [FromBody] SetTenantPasswordDto dto, CancellationToken ct)
+    {
+        var hash = BCrypt.HashPassword(dto.NewPassword, workFactor: 11);
+        await repo.UpdatePasswordHashAsync(id, hash, ct);
         return NoContent();
     }
 

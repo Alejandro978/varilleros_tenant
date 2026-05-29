@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ActiveModuleDto } from '../models/module.model';
 
 interface LoginResponse {
   accessToken: string;
   tenantName: string;
   slug: string;
+  modules: ActiveModuleDto[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -21,10 +23,10 @@ export class AuthService {
       .post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, { slug, password })
       .pipe(
         tap(res => {
-          localStorage.setItem('access_token', res.accessToken);
-          localStorage.setItem('tenant_slug',  res.slug);
-          localStorage.setItem('tenant_name',  res.tenantName);
-          localStorage.setItem('user_email',   res.slug);
+          localStorage.setItem('access_token',    res.accessToken);
+          localStorage.setItem('tenant_slug',     res.slug);
+          localStorage.setItem('tenant_name',     res.tenantName);
+          localStorage.setItem('tenant_modules',  JSON.stringify(res.modules));
         }),
         map(() => void 0)
       );
@@ -43,7 +45,10 @@ export class AuthService {
     return localStorage.getItem('tenant_name') ?? '';
   }
 
-  getUserEmail(): string {
-    return localStorage.getItem('user_email') ?? '';
+  getModules(): ActiveModuleDto[] {
+    const raw = localStorage.getItem('tenant_modules');
+    if (!raw) return [];
+    try { return JSON.parse(raw) as ActiveModuleDto[]; }
+    catch { return []; }
   }
 }

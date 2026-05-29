@@ -9,7 +9,8 @@ public record CreateTenantDto(
     int DbPort,
     string DbName,
     string DbUser,
-    string DbPassword);
+    string DbPassword,
+    string AppPassword);
 
 public record UpdateTenantDto(
     int Id,
@@ -19,3 +20,5 @@ public record UpdateTenantDto(
     string DbName,
     string DbUser,
     string DbPassword);
+
+public record SetTenantPasswordDto(string NewPassword);
