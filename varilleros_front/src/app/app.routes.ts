@@ -56,19 +56,25 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/presupuestos/presupuestos-list/presupuestos-list').then(m => m.PresupuestosListComponent),
       },
-      // ── Rutas de administración (sin restricción de módulo) ──────────────
+      // ── Rutas de administración — requieren módulo ADMIN ────────────────
       {
         path: 'admin/tenants',
+        canActivate: [moduleGuard],
+        data: { module: 'ADMIN' },
         loadComponent: () =>
           import('./features/admin/tenants/tenants-list/tenants-list').then(m => m.TenantsListComponent),
       },
       {
         path: 'admin/modules',
+        canActivate: [moduleGuard],
+        data: { module: 'ADMIN' },
         loadComponent: () =>
           import('./features/admin/modules/modules-list/modules-list').then(m => m.ModulesListComponent),
       },
       {
         path: 'admin/tenants/:id/modules',
+        canActivate: [moduleGuard],
+        data: { module: 'ADMIN' },
         loadComponent: () =>
           import('./features/admin/tenant-modules/tenant-modules/tenant-modules').then(m => m.TenantModulesComponent),
       },

@@ -65,12 +65,14 @@ INSERT INTO modules_catalog (code, name, description) VALUES
     ('PERITOS',       'Peritos',       'Gestión de peritos de seguros'),
     ('ARTICULOS',     'Artículos',     'Catálogo de artículos y repuestos'),
     ('PRECIOS',       'Precios',       'Tablas de precios por número de abolladuras'),
-    ('PRESUPUESTOS',  'Presupuestos',  'Gestión completa de presupuestos PDR');
+    ('PRESUPUESTOS',  'Presupuestos',  'Gestión completa de presupuestos PDR'),
+    ('ADMIN',         'Administración','Acceso al panel de administración multi-tenant');
 
 INSERT INTO tenants (name, slug, db_host, db_port, db_name, db_user, db_password, password_hash) VALUES
     ('Tenant Demo', 'demo', 'localhost', 3306, 'varilleros_demo', 'root', '',
      '$2a$11$GLB8QS/YxbHLmJf81UWl.O7Jphp0tgOqgAyVz9xIFYbMKgo2wjDxy');
 
--- Asignar todos los módulos al tenant demo
+-- Asignar todos los módulos (incluido ADMIN) al tenant demo
+-- En producción: solo asignar ADMIN al tenant super-administrador
 INSERT INTO tenant_modules (tenant_id, module_id, is_active, granted_at)
 SELECT 1, id, 1, NOW() FROM modules_catalog;
