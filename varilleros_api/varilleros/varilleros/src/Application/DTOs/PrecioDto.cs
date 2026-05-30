@@ -1,21 +1,21 @@
 namespace Varilleros.src.Application.DTOs;
 
 public record PrecioDto(
-    int NumeroabolladuraS,
-    int? AletaLeve, int? AletaMedio, int? AletaGrave,
-    int? AcristalaminaLeve, int? AcristalaminaMedio, int? AcristalaminaGrave,
-    int? AletatrasLeve, int? AletatrasMedio, int? AletatrasGrave,
-    int? AsientoLeve, int? AsientoMedio, int? AsientoGrave,
-    int? AsientoDtraLeve, int? AsientoDtraMedio, int? AsientoDtraGrave,
-    int? MaletaLeve, int? MaletaMedio, int? MaletaGrave);
+    int  Numeroabolladuras,
+    int? AletaLeve,  int? AletaMedio,  int? AletaGrave,
+    int? PuertaLeve, int? PuertaMedio, int? PuertaGrave,
+    int? TechoLeve,  int? TechoMedio,  int? TechoGrave,
+    int? CapoLeve,   int? CapoMedio,   int? CapoGrave,
+    int? PortonLeve, int? PortonMedio, int? PortonGrave,
+    int? MontanteLeve, int? MontanteMedio, int? MontanteGrave);
 
-public record CreatePrecioDto(int NumeroabolladuraS);
+public record CreatePrecioDto(int Numeroabolladuras);
 
 public record UpdatePrecioDto(
-    int NumeroabolladuraS,
-    int? AletaLeve, int? AletaMedio, int? AletaGrave,
-    int? AcristalaminaLeve, int? AcristalaminaMedio, int? AcristalaminaGrave,
-    int? AletatrasLeve, int? AletatrasMedio, int? AletatrasGrave,
-    int? AsientoLeve, int? AsientoMedio, int? AsientoGrave,
-    int? AsientoDtraLeve, int? AsientoDtraMedio, int? AsientoDtraGrave,
-    int? MaletaLeve, int? MaletaMedio, int? MaletaGrave);
+    int  Numeroabolladuras,
+    int? AletaLeve,  int? AletaMedio,  int? AletaGrave,
+    int? PuertaLeve, int? PuertaMedio, int? PuertaGrave,
+    int? TechoLeve,  int? TechoMedio,  int? TechoGrave,
+    int? CapoLeve,   int? CapoMedio,   int? CapoGrave,
+    int? PortonLeve, int? PortonMedio, int? PortonGrave,
+    int? MontanteLeve, int? MontanteMedio, int? MontanteGrave);

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.DTOs;
 using Application.UseCases.Presupuestos;
+using Varilleros.src.Domain.Entities;
 
 [Authorize]
 [ApiController]
@@ -27,7 +28,7 @@ public sealed class PresupuestosController(
 
     /// <summary>Crear nuevo presupuesto</summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreatePresupuestoDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] PresupuestoPayload dto, CancellationToken ct)
     {
         var id = await create.ExecuteAsync(dto, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
@@ -35,9 +36,9 @@ public sealed class PresupuestosController(
 
     /// <summary>Actualizar presupuesto</summary>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdatePresupuestoDto dto, CancellationToken ct)
+    public async Task<IActionResult> Update(int id, [FromBody] PresupuestoPayload dto, CancellationToken ct)
     {
-        await update.ExecuteAsync(id, dto with { Id = id }, ct);
+        await update.ExecuteAsync(id, dto, ct);
         return NoContent();
     }
 

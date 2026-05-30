@@ -1,15 +1,14 @@
 namespace Varilleros.src.Application.Validators;
 
 using FluentValidation;
-using DTOs;
+using Varilleros.src.Domain.Entities;
 
-public class CreatePresupuestoDtoValidator : AbstractValidator<CreatePresupuestoDto>
+public class CreatePresupuestoDtoValidator : AbstractValidator<PresupuestoPayload>
 {
     public CreatePresupuestoDtoValidator()
     {
-        RuleFor(x => x.ClienteId).GreaterThan(0);
-        RuleFor(x => x.PeritoId).GreaterThan(0);
-        RuleFor(x => x.Descripcion).NotEmpty();
-        RuleFor(x => x.TotalPresupuesto).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.Estado).InclusiveBetween((short)1, (short)4)
+            .When(x => x.Estado.HasValue)
+            .WithMessage("Estado debe ser 1=Borrador, 2=Enviado, 3=Aceptado, 4=Rechazado");
     }
 }

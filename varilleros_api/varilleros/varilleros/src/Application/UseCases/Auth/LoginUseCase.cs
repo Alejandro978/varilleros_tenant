@@ -30,7 +30,7 @@ public sealed class LoginUseCase(
         var token = GenerateToken(tenant.Id, tenant.Slug, tenant.Name);
         var modules = await GetActiveModulesAsync(tenant.Id, ct);
 
-        return new LoginResponseDto(token, tenant.Name, tenant.Slug, modules);
+        return new LoginResponseDto(token, tenant.Name, tenant.Slug, tenant.Id, modules);
     }
 
     private async Task<IEnumerable<ActiveModuleDto>> GetActiveModulesAsync(int tenantId, CancellationToken ct)

@@ -1,14 +1,14 @@
 namespace Varilleros.src.Infrastructure.MultiTenancy;
 
-using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Data;
 using Varilleros.src.Domain.Exceptions;
-using Varilleros.src.Domain.Repositories.Master;
+using Varilleros.src.Infrastructure.Data;
 
 public sealed class TenantResolver(
-    IMasterDbConnectionFactory masterFactory,
+    IServiceScopeFactory scopeFactory,
     IMemoryCache cache,
     IOptions<TenantCacheOptions> options) : ITenantResolver
 {
@@ -18,13 +18,13 @@ public sealed class TenantResolver(
         if (cache.TryGetValue(cacheKey, out TenantContext? cached))
             return cached!;
 
-        using var conn = masterFactory.CreateConnection();
-        var tenant = await conn.QuerySingleOrDefaultAsync<TenantRow>(
-            "SELECT id, name, slug, db_host, db_port, db_name, db_user, db_password, is_active FROM tenants WHERE slug = @slug AND is_active = TRUE",
-            new { slug }, commandTimeout: 30);
+        // Crea un scope temporal para acceder a MasterDbContext (evita scoped-in-singleton)
+        using var scope = scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MasterDbContext>();
 
-        if (tenant is null)
-            throw new TenantNotFoundException(slug);
+        var tenant = await db.Tenants
+            .FirstOrDefaultAsync(t => t.Slug == slug && t.IsActive, ct)
+            ?? throw new TenantNotFoundException(slug);
 
         var ctx = new TenantContext
         {
@@ -35,11 +35,10 @@ public sealed class TenantResolver(
         cache.Set(cacheKey, ctx, options.Value.CacheDuration);
         return ctx;
     }
-
-    private sealed record TenantRow(int Id, string Name, string Slug, string DbHost, int DbPort, string DbName, string DbUser, string DbPassword, bool IsActive);
 }
 
 public sealed class TenantCacheOptions
 {
-    public TimeSpan CacheDuration { get; set; } = TimeSpan.FromMinutes(5);
+    public int TtlSeconds { get; set; } = 300;
+    public TimeSpan CacheDuration => TimeSpan.FromSeconds(TtlSeconds);
 }

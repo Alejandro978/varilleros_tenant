@@ -12,12 +12,12 @@ public sealed class UpdatePrecioUseCase(IPreciosRepository repo)
         var precio = await repo.GetByIdAsync(numeroabolladuras, ct)
             ?? throw new NotFoundException(nameof(Precio), numeroabolladuras);
         precio.Update(
-            dto.AletaLeve, dto.AletaMedio, dto.AletaGrave,
-            dto.AcristalaminaLeve, dto.AcristalaminaMedio, dto.AcristalaminaGrave,
-            dto.AletatrasLeve, dto.AletatrasMedio, dto.AletatrasGrave,
-            dto.AsientoLeve, dto.AsientoMedio, dto.AsientoGrave,
-            dto.AsientoDtraLeve, dto.AsientoDtraMedio, dto.AsientoDtraGrave,
-            dto.MaletaLeve, dto.MaletaMedio, dto.MaletaGrave);
+            dto.AletaLeve,  dto.AletaMedio,  dto.AletaGrave,
+            dto.PuertaLeve, dto.PuertaMedio, dto.PuertaGrave,
+            dto.TechoLeve,  dto.TechoMedio,  dto.TechoGrave,
+            dto.CapoLeve,   dto.CapoMedio,   dto.CapoGrave,
+            dto.PortonLeve, dto.PortonMedio, dto.PortonGrave,
+            dto.MontanteLeve, dto.MontanteMedio, dto.MontanteGrave);
         await repo.UpdateAsync(precio, ct);
     }
 }

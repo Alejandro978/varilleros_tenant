@@ -1,94 +1,48 @@
 namespace Varilleros.src.Infrastructure.Repositories.Master;
 
-using Dapper;
-using Data;
+using Microsoft.EntityFrameworkCore;
 using Varilleros.src.Domain.Entities;
 using Varilleros.src.Domain.Repositories.Master;
+using Varilleros.src.Infrastructure.Data;
 
-public sealed class TenantRepository(IMasterDbConnectionFactory factory) : ITenantRepository
+public sealed class TenantRepository(MasterDbContext db) : ITenantRepository
 {
-    public async Task<Tenant?> GetBySlugAsync(string slug, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<Tenant>(
-            "SELECT * FROM tenants WHERE slug = @slug", new { slug });
-    }
+    public async Task<Tenant?> GetBySlugAsync(string slug, CancellationToken ct = default) =>
+        await db.Tenants.FirstOrDefaultAsync(t => t.Slug == slug, ct);
 
-    public async Task<Tenant?> GetByIdAsync(int id, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<Tenant>(
-            "SELECT * FROM tenants WHERE id = @id", new { id });
-    }
+    public async Task<Tenant?> GetByIdAsync(int id, CancellationToken ct = default) =>
+        await db.Tenants.FindAsync([id], ct);
 
-    public async Task<IEnumerable<Tenant>> GetAllAsync(CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QueryAsync<Tenant>("SELECT * FROM tenants ORDER BY id");
-    }
+    public async Task<IEnumerable<Tenant>> GetAllAsync(CancellationToken ct = default) =>
+        await db.Tenants.OrderBy(t => t.Id).ToListAsync(ct);
 
     public async Task<int> CreateAsync(Tenant tenant, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("""
-            INSERT INTO tenants (name, slug, db_host, db_port, db_name, db_user, db_password, password_hash, is_active, created_at, updated_at)
-            VALUES (@Name, @Slug, @DbHost, @DbPort, @DbName, @DbUser, @DbPassword, @PasswordHash, @IsActive, @CreatedAt, @UpdatedAt)
-            """, new
-        {
-            tenant.Name,
-            tenant.Slug,
-            tenant.DbHost,
-            tenant.DbPort,
-            tenant.DbName,
-            tenant.DbUser,
-            tenant.DbPassword,
-            tenant.PasswordHash,
-            tenant.IsActive,
-            tenant.CreatedAt,
-            tenant.UpdatedAt,
-        });
-        return await conn.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID()");
+        db.Tenants.Add(tenant);
+        await db.SaveChangesAsync(ct);
+        return tenant.Id;
     }
 
-    public async Task UpdateAsync(Tenant tenant, CancellationToken ct = default)
+    public async Task UpdateAsync(Tenant tenant, CancellationToken ct = default) =>
+        await db.SaveChangesAsync(ct);
+
+    public async Task UpdatePasswordHashAsync(int id, string passwordHash, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("""
-            UPDATE tenants SET
-                name = @Name,
-                db_host = @DbHost,
-                db_port = @DbPort,
-                db_name = @DbName,
-                db_user = @DbUser,
-                db_password = @DbPassword,
-                is_active = @IsActive,
-                updated_at = @UpdatedAt
-            WHERE id = @Id
-            """, new
+        var tenant = await db.Tenants.FindAsync([id], ct);
+        if (tenant is not null)
         {
-            tenant.Id,
-            tenant.Name,
-            tenant.DbHost,
-            tenant.DbPort,
-            tenant.DbName,
-            tenant.DbUser,
-            tenant.DbPassword,
-            tenant.IsActive,
-            tenant.UpdatedAt,
-        });
+            tenant.SetPasswordHash(passwordHash);
+            await db.SaveChangesAsync(ct);
+        }
     }
 
     public async Task DeleteAsync(int id, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("DELETE FROM tenants WHERE id = @id", new { id });
-    }
-
-    public async Task UpdatePasswordHashAsync(int id, string passwordHash, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync(
-            "UPDATE tenants SET password_hash = @passwordHash, updated_at = UTC_TIMESTAMP() WHERE id = @id",
-            new { id, passwordHash });
+        var entity = await db.Tenants.FindAsync([id], ct);
+        if (entity is not null)
+        {
+            db.Tenants.Remove(entity);
+            await db.SaveChangesAsync(ct);
+        }
     }
 }

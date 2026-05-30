@@ -1,50 +1,35 @@
 namespace Varilleros.src.Infrastructure.Repositories;
 
-using Dapper;
-using Data;
+using Microsoft.EntityFrameworkCore;
 using Varilleros.src.Domain.Entities;
 using Varilleros.src.Domain.Repositories;
+using Varilleros.src.Infrastructure.Data;
 
-public sealed class PeritosRepository(ITenantDbConnectionFactory factory) : IPeritosRepository
+public sealed class PeritosRepository(TenantDbContext db) : IPeritosRepository
 {
-    public async Task<Perito?> GetByIdAsync(long id, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<Perito>(
-            "SELECT * FROM peritos WHERE id = @id", new { id });
-    }
+    public async Task<Perito?> GetByIdAsync(long id, CancellationToken ct = default) =>
+        await db.Peritos.FindAsync([id], ct);
 
-    public async Task<IEnumerable<Perito>> GetAllAsync(CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QueryAsync<Perito>("SELECT * FROM peritos ORDER BY id");
-    }
+    public async Task<IEnumerable<Perito>> GetAllAsync(CancellationToken ct = default) =>
+        await db.Peritos.OrderBy(p => p.Id).ToListAsync(ct);
 
     public async Task<long> CreateAsync(Perito perito, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("""
-            INSERT INTO peritos (nombre, email, created_at, updated_at)
-            VALUES (@Nombre, @Email, @CreatedAt, @UpdatedAt)
-            """, perito);
-        return await conn.ExecuteScalarAsync<long>("SELECT LAST_INSERT_ID()");
+        db.Peritos.Add(perito);
+        await db.SaveChangesAsync(ct);
+        return perito.Id;
     }
 
-    public async Task UpdateAsync(Perito perito, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("""
-            UPDATE peritos SET
-                nombre = @Nombre,
-                email = @Email,
-                updated_at = @UpdatedAt
-            WHERE id = @Id
-            """, perito);
-    }
+    public async Task UpdateAsync(Perito perito, CancellationToken ct = default) =>
+        await db.SaveChangesAsync(ct);
 
     public async Task DeleteAsync(long id, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("DELETE FROM peritos WHERE id = @id", new { id });
+        var entity = await db.Peritos.FindAsync([id], ct);
+        if (entity is not null)
+        {
+            db.Peritos.Remove(entity);
+            await db.SaveChangesAsync(ct);
+        }
     }
 }

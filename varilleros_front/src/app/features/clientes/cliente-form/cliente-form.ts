@@ -26,8 +26,8 @@ export class ClienteFormComponent {
     nifCif: ['', Validators.required],
     direccion: ['', Validators.required],
     poblacion: ['', Validators.required],
-    email: ['', Validators.email],
-    telefono: [''],
+    email: ['', [Validators.required, Validators.email]],
+    telefono: ['', Validators.required],
   });
 
   constructor() {

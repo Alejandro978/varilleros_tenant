@@ -45,5 +45,7 @@
   [style]="{ width: '400px' }"
   [draggable]="false"
 >
+  @if (showForm()) {
   <app-perito-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+}
 </p-dialog>

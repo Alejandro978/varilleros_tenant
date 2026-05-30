@@ -47,5 +47,7 @@
   [style]="{ width: '460px' }"
   [draggable]="false"
 >
+  @if (showForm()) {
   <app-articulo-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+}
 </p-dialog>

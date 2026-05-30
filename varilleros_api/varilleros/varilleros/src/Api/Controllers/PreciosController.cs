@@ -30,14 +30,14 @@ public sealed class PreciosController(
     public async Task<IActionResult> Create([FromBody] CreatePrecioDto dto, CancellationToken ct)
     {
         await create.ExecuteAsync(dto, ct);
-        return CreatedAtAction(nameof(GetById), new { numeroabolladuras = dto.NumeroabolladuraS }, null);
+        return CreatedAtAction(nameof(GetById), new { numeroabolladuras = dto.Numeroabolladuras }, null);
     }
 
     /// <summary>Actualizar precio</summary>
     [HttpPut("{numeroabolladuras:int}")]
     public async Task<IActionResult> Update(int numeroabolladuras, [FromBody] UpdatePrecioDto dto, CancellationToken ct)
     {
-        await update.ExecuteAsync(numeroabolladuras, dto with { NumeroabolladuraS = numeroabolladuras }, ct);
+        await update.ExecuteAsync(numeroabolladuras, dto with { Numeroabolladuras = numeroabolladuras }, ct);
         return NoContent();
     }
 

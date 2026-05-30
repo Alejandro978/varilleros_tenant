@@ -51,5 +51,7 @@
   [style]="{ width: '540px' }"
   [draggable]="false"
 >
+  @if (showForm()) {
   <app-cliente-form [item]="editing()" (saved)="onSaved()" (cancelled)="showForm.set(false)" />
+}
 </p-dialog>

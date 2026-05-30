@@ -6,4 +6,5 @@ public record LoginResponseDto(
     string AccessToken,
     string TenantName,
     string Slug,
+    int TenantId,
     IEnumerable<ActiveModuleDto> Modules);

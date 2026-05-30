@@ -4,6 +4,8 @@ public record TenantModuleDto(
     int Id,
     int TenantId,
     int ModuleId,
+    string ModuleCode,
+    string ModuleName,
     bool IsActive,
     DateTime? GrantedAt,
     DateTime? ExpiresAt);

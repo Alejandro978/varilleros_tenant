@@ -8,7 +8,7 @@ public sealed class CreatePrecioUseCase(IPreciosRepository repo)
 {
     public async Task ExecuteAsync(CreatePrecioDto dto, CancellationToken ct = default)
     {
-        var precio = Precio.Create(dto.NumeroabolladuraS);
+        var precio = Precio.Create(dto.Numeroabolladuras);
         await repo.CreateAsync(precio, ct);
     }
 }

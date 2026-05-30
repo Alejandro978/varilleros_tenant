@@ -1,64 +1,41 @@
 namespace Varilleros.src.Infrastructure.Repositories.Master;
 
-using Dapper;
-using Data;
+using Microsoft.EntityFrameworkCore;
 using Varilleros.src.Domain.Entities;
 using Varilleros.src.Domain.Repositories.Master;
+using Varilleros.src.Infrastructure.Data;
 
-public sealed class TenantModuleRepository(IMasterDbConnectionFactory factory) : ITenantModuleRepository
+public sealed class TenantModuleRepository(MasterDbContext db) : ITenantModuleRepository
 {
-    public async Task<TenantModule?> GetByIdAsync(int id, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<TenantModule>(
-            "SELECT * FROM tenant_modules WHERE id = @id", new { id });
-    }
+    public async Task<TenantModule?> GetByIdAsync(int id, CancellationToken ct = default) =>
+        await db.TenantModules.FindAsync([id], ct);
 
-    public async Task<IEnumerable<TenantModule>> GetByTenantIdAsync(int tenantId, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QueryAsync<TenantModule>(
-            "SELECT * FROM tenant_modules WHERE tenant_id = @tenantId ORDER BY id", new { tenantId });
-    }
+    public async Task<IEnumerable<TenantModule>> GetByTenantIdAsync(int tenantId, CancellationToken ct = default) =>
+        await db.TenantModules.Where(tm => tm.TenantId == tenantId).OrderBy(tm => tm.Id).ToListAsync(ct);
 
-    public async Task<TenantModule?> GetByTenantAndModuleAsync(int tenantId, int moduleId, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<TenantModule>(
-            "SELECT * FROM tenant_modules WHERE tenant_id = @tenantId AND module_id = @moduleId", new { tenantId, moduleId });
-    }
+    public async Task<TenantModule?> GetByTenantAndModuleAsync(int tenantId, int moduleId, CancellationToken ct = default) =>
+        await db.TenantModules.FirstOrDefaultAsync(tm => tm.TenantId == tenantId && tm.ModuleId == moduleId, ct);
 
-    public async Task<IEnumerable<TenantModule>> GetAllAsync(CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        return await conn.QueryAsync<TenantModule>("SELECT * FROM tenant_modules ORDER BY id");
-    }
+    public async Task<IEnumerable<TenantModule>> GetAllAsync(CancellationToken ct = default) =>
+        await db.TenantModules.OrderBy(tm => tm.Id).ToListAsync(ct);
 
     public async Task<int> CreateAsync(TenantModule tenantModule, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("""
-            INSERT INTO tenant_modules (tenant_id, module_id, is_active, granted_at, expires_at, created_at, updated_at)
-            VALUES (@TenantId, @ModuleId, @IsActive, @GrantedAt, @ExpiresAt, @CreatedAt, @UpdatedAt)
-            """, tenantModule);
-        return await conn.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID()");
+        db.TenantModules.Add(tenantModule);
+        await db.SaveChangesAsync(ct);
+        return tenantModule.Id;
     }
 
-    public async Task UpdateAsync(TenantModule tenantModule, CancellationToken ct = default)
-    {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("""
-            UPDATE tenant_modules SET
-                is_active = @IsActive,
-                expires_at = @ExpiresAt,
-                updated_at = @UpdatedAt
-            WHERE id = @Id
-            """, tenantModule);
-    }
+    public async Task UpdateAsync(TenantModule tenantModule, CancellationToken ct = default) =>
+        await db.SaveChangesAsync(ct);
 
     public async Task DeleteAsync(int id, CancellationToken ct = default)
     {
-        using var conn = factory.CreateConnection();
-        await conn.ExecuteAsync("DELETE FROM tenant_modules WHERE id = @id", new { id });
+        var entity = await db.TenantModules.FindAsync([id], ct);
+        if (entity is not null)
+        {
+            db.TenantModules.Remove(entity);
+            await db.SaveChangesAsync(ct);
+        }
     }
 }

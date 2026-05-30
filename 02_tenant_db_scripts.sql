@@ -1,17 +1,21 @@
 -- =============================================================
--- TENANT DATABASE
+-- TENANT DATABASE — varilleros_demo
 -- Motor: MySQL / MariaDB
--- Ejecutar en cada base de datos individual de tenant.
--- Sustituir {TENANT_DB} por el nombre real, ej:
---   varilleros_acme, varilleros_betacar ...
---
--- USE varilleros_acme;   <-- ejecutar antes de correr este script
+-- Generado desde TenantDbContext.cs + entidades del dominio
+-- Cambiar "varilleros_demo" por el nombre real del tenant
 -- =============================================================
+
+DROP DATABASE IF EXISTS varilleros_demo;
+CREATE DATABASE varilleros_demo
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+USE varilleros_demo;
 
 -- -------------------------------------------------------------
 -- 1. CLIENTE
 -- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS cliente (
+CREATE TABLE cliente (
     id              INT             NOT NULL AUTO_INCREMENT,
     nombrecliente   VARCHAR(200)    NOT NULL,
     nifcif          VARCHAR(20)     NOT NULL,
@@ -28,7 +32,7 @@ CREATE TABLE IF NOT EXISTS cliente (
 -- -------------------------------------------------------------
 -- 2. PERITOS
 -- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS peritos (
+CREATE TABLE peritos (
     id          BIGINT          NOT NULL AUTO_INCREMENT,
     nombre      VARCHAR(200)    NOT NULL,
     email       VARCHAR(150),
@@ -41,7 +45,7 @@ CREATE TABLE IF NOT EXISTS peritos (
 -- -------------------------------------------------------------
 -- 3. ARTICULO
 -- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS articulo (
+CREATE TABLE articulo (
     id                      INT             NOT NULL AUTO_INCREMENT,
     codigo                  VARCHAR(100)    NOT NULL,
     descripcion             VARCHAR(500)    NOT NULL,
@@ -55,27 +59,26 @@ CREATE TABLE IF NOT EXISTS articulo (
 -- -------------------------------------------------------------
 -- 4. PRECIOS
 -- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS precios (
-    numeroabolladuras   INT             NOT NULL  COMMENT 'Clave primaria: número de abolladuras del panel',
-    aletaleve           INT,
-    aletamedio          INT,
-    aletagrave          INT,
-    puertaleve          INT,
-    puertamedio         INT,
-    puertagrave         INT,
-    techoleve           INT,
-    techomedio          INT,
-    techograve          INT,
-    capoleve            INT,
-    capomedio           INT,
-    capograve           INT,
-    portonleve          INT,
-    portonmedio         INT,
-    portongrave         INT,
-    montanteleve        INT,
-    montantemedio       INT,
-    montantegrave       INT,
-    updated_at          DATETIME        NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+CREATE TABLE precios (
+    numeroabolladuras INT NOT NULL COMMENT 'Clave primaria: número de abolladuras del panel',
+    aletaleve         INT NULL,
+    aletamedio        INT NULL,
+    aletagrave        INT NULL,
+    puertaleve        INT NULL,
+    puertamedio       INT NULL,
+    puertagrave       INT NULL,
+    techoleve         INT NULL,
+    techomedio        INT NULL,
+    techograve        INT NULL,
+    capoleve          INT NULL,
+    capomedio         INT NULL,
+    capograve         INT NULL,
+    portonleve        INT NULL,
+    portonmedio       INT NULL,
+    portongrave       INT NULL,
+    montanteleve      INT NULL,
+    montantemedio     INT NULL,
+    montantegrave     INT NULL,
     CONSTRAINT precios_pkey PRIMARY KEY (numeroabolladuras)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='Tarifa de precios por número de abolladuras y zona/gravedad';
@@ -88,7 +91,7 @@ CREATE TABLE IF NOT EXISTS precios (
 -- Paneles: ADI, ADD, ATI, ATD, PDI, PDD, PTD, PTI,
 --          CAPO, TECHO, PORTON, MI, MD
 -- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS presupuesto (
+CREATE TABLE presupuesto (
     id                      INT             NOT NULL AUTO_INCREMENT,
     reparador               VARCHAR(200),
     marca                   VARCHAR(100),
@@ -254,16 +257,12 @@ CREATE TABLE IF NOT EXISTS presupuesto (
     email                   VARCHAR(150),
     telefono                VARCHAR(20),
     aseguradora             VARCHAR(200),
-    idPerito                BIGINT,
+    idPerito       BIGINT NULL,
 
-    created_at              DATETIME        NOT NULL DEFAULT NOW(),
-    updated_at              DATETIME        NOT NULL DEFAULT NOW() ON UPDATE NOW(),
-
-    CONSTRAINT presupuesto_pkey PRIMARY KEY (id)
+    CONSTRAINT presupuesto_pkey PRIMARY KEY (id),
+    KEY idx_presupuesto_matricula (matricula),
+    KEY idx_presupuesto_estado    (estado),
+    KEY idx_presupuesto_idperito  (idPerito),
+    CONSTRAINT fk_presupuesto_perito FOREIGN KEY (idPerito) REFERENCES peritos(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='Presupuestos de reparación de carrocería por abolladuras (PDR)';
-
--- Índices útiles
-CREATE INDEX IF NOT EXISTS idx_presupuesto_matricula ON presupuesto (matricula);
-CREATE INDEX IF NOT EXISTS idx_presupuesto_estado    ON presupuesto (estado);
-CREATE INDEX IF NOT EXISTS idx_presupuesto_idperito  ON presupuesto (idPerito);
