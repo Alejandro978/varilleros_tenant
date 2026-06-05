@@ -1,0 +1,71 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
+
+  <!-- Cabecera informativa (PK no editable) -->
+  <div class="flex items-center gap-2 p-3 bg-surface-100 rounded-lg text-sm text-surface-600">
+    <i class="pi pi-info-circle text-primary"></i>
+    El número de abolladuras no es modificable.
+  </div>
+
+  <!-- Grid de precios por zona -->
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr class="bg-surface-100">
+        <th class="text-left py-2 px-3 font-semibold w-28">Zona</th>
+        <th class="text-center py-2 px-3 font-semibold text-green-700">Leve</th>
+        <th class="text-center py-2 px-3 font-semibold text-yellow-700">Medio</th>
+        <th class="text-center py-2 px-3 font-semibold text-red-700">Grave</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Aleta -->
+      <tr class="border-t border-surface-200">
+        <td class="py-2 px-3 font-medium text-surface-700">Aleta</td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="aletaLeve"   [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="aletaMedio"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="aletaGrave"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+      </tr>
+      <!-- Puerta -->
+      <tr class="border-t border-surface-200">
+        <td class="py-2 px-3 font-medium text-surface-700">Puerta</td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="puertaLeve"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="puertaMedio" [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="puertaGrave" [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+      </tr>
+      <!-- Techo -->
+      <tr class="border-t border-surface-200">
+        <td class="py-2 px-3 font-medium text-surface-700">Techo</td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="techoLeve"   [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="techoMedio"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="techoGrave"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+      </tr>
+      <!-- Capó -->
+      <tr class="border-t border-surface-200">
+        <td class="py-2 px-3 font-medium text-surface-700">Capó</td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="capoLeve"    [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="capoMedio"   [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="capoGrave"   [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+      </tr>
+      <!-- Portón -->
+      <tr class="border-t border-surface-200">
+        <td class="py-2 px-3 font-medium text-surface-700">Portón</td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="portonLeve"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="portonMedio" [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="portonGrave" [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+      </tr>
+      <!-- Montante -->
+      <tr class="border-t border-surface-200">
+        <td class="py-2 px-3 font-medium text-surface-700">Montante</td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="montanteLeve"  [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="montanteMedio" [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+        <td class="py-2 px-2"><p-inputnumber formControlName="montanteGrave" [min]="0" styleClass="w-full" inputStyleClass="text-right w-full" /></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Acciones -->
+  <div class="flex justify-end gap-2 pt-2 border-t border-surface-200">
+    <p-button label="Cancelar" severity="secondary" type="button" (click)="cancelled.emit()" />
+    <p-button label="Guardar cambios" icon="pi pi-check" type="submit" />
+  </div>
+
+</form>

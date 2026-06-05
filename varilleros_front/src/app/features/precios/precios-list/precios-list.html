@@ -1,22 +1,51 @@
 <app-page-header title="Tabla de Precios" />
 
+<!-- Buscador por número de abolladuras -->
+<div class="flex items-center gap-2 mb-4">
+  <span class="p-input-icon-left flex-1 max-w-xs relative">
+    <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 z-10"></i>
+    <input
+      pInputText
+      type="number"
+      placeholder="Buscar nº abolladuras..."
+      [(ngModel)]="filterValue"
+      (input)="applyFilter($event)"
+      class="pl-9 w-full"
+      min="1"
+    />
+  </span>
+  @if (filterValue) {
+    <p-button icon="pi pi-times" severity="secondary" [text]="true"
+      (click)="clearFilter()" pTooltip="Limpiar filtro" />
+  }
+</div>
+
 <p-table
+  #dt
   [value]="items()"
   [loading]="loading()"
   stripedRows
   responsiveLayout="scroll"
   styleClass="p-datatable-sm"
   [scrollable]="true"
+  scrollHeight="calc(100vh - 270px)"
+  [paginator]="true"
+  [rows]="50"
+  [rowsPerPageOptions]="[25, 50, 100]"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="{first}–{last} de {totalRecords} filas"
+  [globalFilterFields]="['numeroabolladuras']"
 >
   <ng-template #header>
     <tr>
-      <th class="text-center" rowspan="2">Nº Abolladuras</th>
+      <th class="text-center sticky left-0 bg-white z-10" rowspan="2">Nº Abolladuras</th>
       <th class="text-center" colspan="3">Aleta</th>
       <th class="text-center" colspan="3">Puerta</th>
       <th class="text-center" colspan="3">Techo</th>
       <th class="text-center" colspan="3">Capó</th>
       <th class="text-center" colspan="3">Portón</th>
       <th class="text-center" colspan="3">Montante</th>
+      <th class="text-center" rowspan="2"></th>
     </tr>
     <tr>
       <th>Leve</th><th>Medio</th><th>Grave</th>
@@ -29,7 +58,7 @@
   </ng-template>
   <ng-template #body let-item>
     <tr>
-      <td class="text-center font-bold">{{ item.numeroabolladuras }}</td>
+      <td class="text-center font-bold sticky left-0 bg-white">{{ item.numeroabolladuras }}</td>
       <td class="text-right">{{ item.aletaLeve   ?? '—' }}</td>
       <td class="text-right">{{ item.aletaMedio  ?? '—' }}</td>
       <td class="text-right">{{ item.aletaGrave  ?? '—' }}</td>
@@ -48,13 +77,35 @@
       <td class="text-right">{{ item.montanteLeve  ?? '—' }}</td>
       <td class="text-right">{{ item.montanteMedio ?? '—' }}</td>
       <td class="text-right">{{ item.montanteGrave ?? '—' }}</td>
+      <td class="text-center">
+        <p-button icon="pi pi-pencil" severity="secondary" size="small" [text]="true"
+          (click)="openEdit(item)" pTooltip="Editar precios" tooltipPosition="left" />
+      </td>
     </tr>
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="19">
+      <td colspan="20">
         <app-empty-state message="No hay precios configurados" />
       </td>
     </tr>
   </ng-template>
 </p-table>
+
+<!-- Dialog de edición — sin crear ni borrar, solo editar -->
+<p-dialog
+  [header]="'Editar precios — ' + (editing()?.numeroabolladuras ?? '') + ' abolladuras'"
+  [visible]="showForm()"
+  (visibleChange)="showForm.set($event)"
+  [modal]="true"
+  [style]="{ width: '480px' }"
+  [draggable]="false"
+>
+  @if (showForm()) {
+    <app-precio-form
+      [item]="editing()"
+      (saved)="onSaved()"
+      (cancelled)="showForm.set(false)"
+    />
+  }
+</p-dialog>
